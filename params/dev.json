@@ -1,0 +1,5 @@
+[
+  {"ParameterKey": "Environment", "ParameterValue": "dev"},
+  {"ParameterKey": "EnableSSHAccess", "ParameterValue": "false"},
+  {"ParameterKey": "InstanceType", "ParameterValue": "t3.micro"}
+]

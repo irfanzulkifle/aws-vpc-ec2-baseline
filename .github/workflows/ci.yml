@@ -1,0 +1,27 @@
+name: IaC CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  lint-and-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install IaC tooling
+        run: pip install --quiet cfn-lint checkov
+
+      - name: cfn-lint (CloudFormation best-practice + syntax)
+        run: cfn-lint template.yaml
+
+      - name: checkov (security misconfiguration scan)
+        run: checkov -f template.yaml --quiet
