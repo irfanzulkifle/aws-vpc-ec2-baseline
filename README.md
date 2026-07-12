@@ -2,7 +2,7 @@
 
 A reusable, security-conscious **CloudFormation** baseline that spins up a
 single-region VPC with a public subnet, internet gateway, route table, a
-hardened security group, and an Amazon Linux 2023 EC2 instance.
+hardened security group and an Amazon Linux 2023 EC2 instance.
 
 > Refactored and hardened from a training-lab script into a clean,
 > parameterized, CI-scanned Infrastructure-as-Code module.
@@ -16,7 +16,7 @@ The original lab used a bash script that:
 - and baked in Academy-specific names (`Cafe VPC`, `LabInstanceProfile`).
 
 This repo fixes all of that and turns it into a **production-minded** artifact:
-real IaC, real security defaults, and a CI pipeline that scans every change.
+real IaC, real security defaults and a CI pipeline that scans every change.
 
 ## Architecture
 
@@ -50,7 +50,7 @@ real IaC, real security defaults, and a CI pipeline that scans every change.
 +--------------------------+
 ```
 
-Default access path: **SSM Session Manager** over port 443 — no inbound
+Default access path: **SSM Session Manager** over port 443, no inbound
 security-group rules, no exposed SSH key.
 
 ## Security decisions (and why)
@@ -60,7 +60,7 @@ security-group rules, no exposed SSH key.
 | **SSM-only by default** (no open port 22) | You can shell into the box via AWS Systems Manager Session Manager. Removes the #1 attack surface (open SSH) without losing admin access. |
 | **Optional SSH scoped to a CIDR** (`AllowedSSHCidr`, default = VPC range) | If you must use SSH, it's never `0.0.0.0/0`. In real use you tighten it to your own IP. |
 | **AMI from SSM parameter** (`AWS::SSM::Parameter::Value`) | No hard-coded AMI IDs that go stale. Always pulls the latest AL2023 at deploy time. |
-| **Least-privilege IAM** | Instance gets only `AmazonSSMManagedInstanceCore` — nothing more. |
+| **Least-privilege IAM** | Instance gets only `AmazonSSMManagedInstanceCore` and nothing more. |
 | **Parameterized CIDRs / instance type** | Reusable across dev/staging/prod without editing the template. |
 | **CI security scan** (`checkov`) | Every PR is checked for misconfigurations before merge. |
 
@@ -100,9 +100,9 @@ Always tear down when not in use to avoid stray charges.
 ## CI
 
 `.github/workflows/ci.yml` runs on every push/PR:
-- **cfn-lint** — CloudFormation syntax + best-practice rules.
-- **checkov** — static security scan for IaC misconfigurations.
+- **cfn-lint**, CloudFormation syntax + best-practice rules.
+- **checkov**, static security scan for IaC misconfigurations.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT, see [LICENSE](LICENSE).
